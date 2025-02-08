@@ -17,6 +17,12 @@ export enum Regions {
   EU = 'eu',
   ASIA = 'asia',
 }
+
+export enum PriceChangeType {
+  PERCENTAGE = 'percentage',
+  AMOUNT = 'amount',
+}
+
 export type Settings = {
   ticker: string;
   showAs: string;
@@ -24,8 +30,10 @@ export type Settings = {
   type: QuoteTypes;
   showIcon: boolean;
   region: Regions;
+  priceChangeType: PriceChangeType;
   showTotal: boolean;
   totalAmount: number;
+  totalCost: number;
   risingColor: string;
   fallingColor: string;
 };

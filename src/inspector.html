@@ -107,6 +107,19 @@
       <option value="60">1 hour</option>
     </select>
   </div>
+  <div type="radio" class="sdpi-item radio-wrapper" id="price_change_type_radio">
+    <div class="sdpi-item-label">Price Change Type</div>
+    <div class="sdpi-item-value radio-container">
+      <span class="sdpi-item-child">
+        <input id="price_change_type_radio1" type="radio" value="percentage" checked name="price_change_type_radio" />
+        <label for="price_change_type_radio1" class="sdpi-item-label"><span></span>Percentage</label>
+      </span>
+      <span class="sdpi-item-child">
+        <input id="price_change_type_radio2" type="radio" value="amount" name="price_change_type_radio" />
+        <label for="price_change_type_radio2" class="sdpi-item-label"><span></span>Amount</label>
+      </span>
+    </div>
+  </div>
   <div type="radio" class="sdpi-item radio-wrapper" id="total_radio">
     <div class="sdpi-item-label">Total</div>
     <div class="sdpi-item-value radio-container">
@@ -137,6 +150,17 @@
         class="sdpi-item-value"
         id="total_amount"
         placeholder="Enter amount held"
+        type="number"
+      />
+    </div>
+  </div>
+  <div class="sdpi-item" id="total_cost_wrapper" style="display: none">
+    <div class="sdpi-item-label">Cost</div>
+    <div class="sdpi-item">
+      <input
+        class="sdpi-item-value"
+        id="total_cost"
+        placeholder="Enter total cost"
         type="number"
       />
     </div>

@@ -1,6 +1,6 @@
 import { DidReceiveSettingsEvent, Inspector } from '@fnando/streamdeck';
 import plugin from './plugin';
-import { ON_PUSH, QuoteTypes, Regions, Settings } from './helpers/settings';
+import { ON_PUSH, QuoteTypes, Regions, PriceChangeType, Settings } from './helpers/settings';
 import { ImgState } from './images/actions/images';
 
 class DefaultPropertyInspector extends Inspector {
@@ -11,8 +11,10 @@ class DefaultPropertyInspector extends Inspector {
     type: QuoteTypes.STOCK,
     showIcon: true,
     region: Regions.US,
+    priceChangeType: PriceChangeType.PERCENTAGE,
     showTotal: false,
     totalAmount: 0,
+    totalCost: 0,
     risingColor: ImgState.increasing,
     fallingColor: ImgState.decreasing,
   };
@@ -22,15 +24,18 @@ class DefaultPropertyInspector extends Inspector {
   public regionRadio: HTMLDivElement;
   public showIconRadio: HTMLDivElement;
   public frequencyInput: HTMLInputElement;
+  public priceChangeTypeRadio: HTMLDivElement;
   public showTotalRadio: HTMLDivElement;
   public totalAmountInput: HTMLInputElement;
   public totalAmountWrapperElement: HTMLDivElement;
+  public totalCostInput: HTMLInputElement;
+  public totalCostWrapperElement: HTMLDivElement;
   public risingColorInput: HTMLInputElement;
   public fallingColorInput: HTMLInputElement;
   public saveBtn: HTMLButtonElement;
   public getCheckedValue: (ele: HTMLDivElement) => string | null; // Adjusted the type definition
   public setCheckedValue: (ele: HTMLDivElement, value: string) => void;
-
+  
   handleDidConnectToSocket(): void {
     // Set up your HTML event handlers here
     this.tickerInput = document.querySelector('#ticker') as HTMLInputElement;
@@ -45,6 +50,9 @@ class DefaultPropertyInspector extends Inspector {
     this.frequencyInput = document.querySelector(
       '#frequency'
     ) as HTMLInputElement;
+    this.priceChangeTypeRadio = document.querySelector(
+      '#price_change_type_radio'
+    ) as HTMLDivElement;
     this.showTotalRadio = document.querySelector(
       '#total_radio'
     ) as HTMLInputElement;
@@ -52,6 +60,10 @@ class DefaultPropertyInspector extends Inspector {
       '#total_amount'
     ) as HTMLInputElement;
     this.totalAmountWrapperElement = document.querySelector('#total_amount_wrapper') as HTMLDivElement;
+    this.totalCostInput = document.querySelector(
+      '#total_cost'
+    ) as HTMLInputElement;
+    this.totalCostWrapperElement = document.querySelector('#total_cost_wrapper') as HTMLDivElement;
     this.risingColorInput = document.querySelector(
       '#rising-color'
     ) as HTMLInputElement;
@@ -100,8 +112,10 @@ class DefaultPropertyInspector extends Inspector {
         region: this.getCheckedValue(this.regionRadio),
         showIcon: this.getCheckedValue(this.showIconRadio) === 'true',
         frequency: this.frequencyInput.value,
+        priceChangeType: this.getCheckedValue(this.priceChangeTypeRadio),
         showTotal: showTotalVal,
         totalAmount: this.totalAmountInput.value === '' || !showTotalVal ? 0 : parseFloat(this.totalAmountInput.value),
+        totalCost: this.totalCostInput.value === '' || !showTotalVal ? 0 : parseFloat(this.totalCostInput.value),
         risingColor: this.risingColorInput.value,
         fallingColor: this.fallingColorInput.value,
       });
@@ -133,14 +147,17 @@ class DefaultPropertyInspector extends Inspector {
         let element = e.target as HTMLInputElement;
         if (element.checked && element.value === 'true') {
           this.totalAmountWrapperElement.style.display = 'flex';
+          this.totalCostWrapperElement.style.display = 'flex';
         } else if(element.checked) {
           this.totalAmountWrapperElement.style.display = 'none';
+          this.totalCostWrapperElement.style.display = 'none';
         }
       });
     })
 
     if(this.settings.showTotal) {
       this.totalAmountWrapperElement.style.display = 'flex';
+      this.totalCostWrapperElement.style.display = 'flex';
     } 
   }
 
@@ -155,8 +172,10 @@ class DefaultPropertyInspector extends Inspector {
     this.setCheckedValue(this.regionRadio, this.settings.region);
     this.setCheckedValue(this.showIconRadio, this.settings.showIcon.toString());
     this.frequencyInput.value = this.settings.frequency ?? ON_PUSH;
+    this.setCheckedValue(this.priceChangeTypeRadio, this.settings.priceChangeType);
     this.setCheckedValue(this.showTotalRadio, this.settings.showTotal.toString());
     this.totalAmountInput.value = this.settings.totalAmount.toString();
+    this.totalCostInput.value = this.settings.totalCost.toString();
     this.risingColorInput.value =
       this.settings.risingColor ?? ImgState.increasing;
     this.fallingColorInput.value =
@@ -170,8 +189,10 @@ class DefaultPropertyInspector extends Inspector {
     }
     if(this.settings.showTotal) {
       this.totalAmountWrapperElement.style.display = 'flex';
+      this.totalCostWrapperElement.style.display = 'flex';
     } else {
       this.totalAmountWrapperElement.style.display = 'none';
+      this.totalCostWrapperElement.style.display = 'none';
     }
   }
 }

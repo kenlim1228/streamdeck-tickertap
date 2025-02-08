@@ -6,12 +6,14 @@ import {
   changeSvgState,
 } from '../images/actions/images';
 import { formatPrice, addThousandSeperator } from './parser';
+import { PriceChangeType } from './settings';
 
 export async function drawQuoteImage(
   ticker: string,
   icon: string,
   price: number,
-  percentage: number,
+  changeType: PriceChangeType,
+  change: number,
   totalValue: number,
   decimals: number,
   colors: { increasing: ImgState; decreasing: ImgState }
@@ -38,8 +40,8 @@ export async function drawQuoteImage(
   }
 
   // Determine color and SVG content based on price change
-  let svgContent = percentage >= 0 ? arrowUp : arrowDown;
-  const state = percentage >= 0 ? colors.increasing : colors.decreasing;
+  let svgContent = change >= 0 ? arrowUp : arrowDown;
+  const state = change >= 0 ? colors.increasing : colors.decreasing;
   svgContent = changeSvgState(svgContent, state);
 
   // Encode the SVG content
@@ -88,13 +90,14 @@ export async function drawQuoteImage(
 
   offsetY = totalValue ? offsetY - 3 : offsetY;
 
-  // Set the fill color for percentage change
+  // Set the fill color for change
   ctx.fillStyle = state;
   ctx.font = 'normal 16pt "Verdana"';
-  ctx.fillText(`(${percentage.toFixed(2)}%)`, 10, 128 + offsetY);
+  const changeText = `(${change.toFixed(2)}` + (changeType === PriceChangeType.PERCENTAGE ? '%)' : ')');
+  ctx.fillText(changeText, 10, 128 + offsetY);
 
   if (totalValue) {
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = totalValue >= 0 ? colors.increasing : colors.decreasing;
     ctx.fillText(addThousandSeperator(Math.round(totalValue)), 10, 128);
   }
 

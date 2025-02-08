@@ -4,7 +4,7 @@ import {
   WillAppearEvent,
 } from '@fnando/streamdeck';
 import { drawQuoteImage } from '../helpers/drawing';
-import { ON_PUSH, Settings } from '../helpers/settings';
+import { ON_PUSH, PriceChangeType, Settings } from '../helpers/settings';
 import httpClient from '../helpers/httpClient';
 import { Target } from '@fnando/streamdeck/dist/Target';
 import { getApiUrl } from '../helpers/utils';
@@ -85,15 +85,20 @@ class Quote extends Action {
             (this.settings[ctx]?.fallingColor as ImgState) ??
             ImgState.decreasing,
         };
-        const totalValue = this.settings[ctx]?.showTotal
+        let totalValue = this.settings[ctx]?.showTotal
           ? this.settings[ctx]?.totalAmount * quote.price
           : 0;
+        const totalCost = this.settings[ctx]?.showTotal
+          ? this.settings[ctx]?.totalCost
+          : 0;
+        totalValue -= totalCost;
         const maxDecimals = MAX_DECIMALS_BY_TYPE[this.settings[ctx]?.type];
         const image = await drawQuoteImage(
           this.settings[ctx]?.showAs || quote.ticker,
           quote.icon,
           quote.price,
-          quote.percentageChange,
+          this.settings[ctx]?.priceChangeType,
+          this.settings[ctx]?.priceChangeType === PriceChangeType.AMOUNT ? quote.change : quote.percentageChange,
           totalValue,
           maxDecimals,
           colors
