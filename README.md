@@ -99,8 +99,10 @@ Click on the button below to download the latest version of the plugin directly:
   - **5 minutes** - _Every 5 minutes_.
   - **30 minutes** - _Every 30 minutes_.
   - **1 hour** - _Hourly_.
-- Total: Show/Hide the amount owned multiplied by the price
-  - **Amount** - Amount owned
+- Price Change Type: Either show change in percentage or actual amount
+- Total: Show/Hide the current market value or unrealized P&L (if cost is provided)
+  - **Amount** - Quantity owned to show current market value
+  - **Cost** - Total cost of owned, if provided will show unrealized P&L: (quantity owned * current price) - total cost of owned
 - Rising/Falling colors: Let you choose the color you want for Rising/Falling stocks.
 
 **_Note_: Long pressed the key button redirects to the ticker website.**
